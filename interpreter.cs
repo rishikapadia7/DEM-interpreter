@@ -5,19 +5,31 @@ public class Program
 {
     static void Main()
     {
-        Console.WriteLine("Lake Tahoe Digital Elevation Model");
+        Console.WriteLine("Digital Elevation Model - Body of Water");
 
         //Store file path of input file
-        string filepath = "C:/Users/Rishi/Google Drive/150/Visual Studio 2008/Projects/pa3/pa3/bin/Debug/LakeTahoeDEM.csv";
-        
+        Console.WriteLine("Enter path to csv file as path/to/filename.csv: ");
+        string filepath = Console.ReadLine().ToString();
+
+        Console.WriteLine("Filepath: " + filepath);
         //Throw an argument exception if the file does not exist.
-        if (File.Exists(filepath) == false)
+        
+        while (Path.GetExtension(filepath) != ".csv")
         {
-            throw new ArgumentException("File specified does not exist.");
+            if (File.Exists(filepath))
+            {
+                Console.WriteLine("Not a CSV.  Please re-enter path to a valid CSV file: ");
+                filepath = Console.ReadLine().ToString();
+                
+            }
+            else
+            {
+                Console.WriteLine("File not found.  Please re-enter path to CSV file: ");
+                filepath = Console.ReadLine().ToString();
+            }
         }
-        //Create an elevation object of the ElevationModel Class, and use
-        //Lake TahoeDEM.csv as the input file
-        ElevationModel elevObject = new ElevationModel("LakeTahoeDEM.csv");
+        //Create an elevation object of the ElevationModel Class using input file
+        ElevationModel elevObject = new ElevationModel(filepath);
 
         Console.WriteLine("     Rows:   {0}", elevObject.Rows);
         Console.WriteLine("  Columns:   {0}\n", elevObject.Columns);
