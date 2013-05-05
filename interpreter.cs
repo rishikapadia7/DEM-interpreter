@@ -34,67 +34,76 @@ public class Program
         Console.WriteLine("     Rows:   {0}", elevObject.Rows);
         Console.WriteLine("  Columns:   {0}\n", elevObject.Columns);
 
-        Console.WriteLine("Detected Outlier Cells");
-        Console.WriteLine("  Elevation   DEM Grid Cell   Problem");
-
         //Attain all outlier objects and store in array of GridPoint class
         GridPoint[] allOutliers = elevObject.GetOutliers();
 
-        //Output the erroneous values for all the outliers
-        for (int i = 0; i < allOutliers.Length; i++)
+        //Output the erroneous values for all outliers if there are any
+        if (allOutliers.Length == 0)
         {
-            //Store the row reference of current outlier in r
-            int r = allOutliers[i].Row;
-            //Store the column reference of current outlier in c
-            int c = allOutliers[i].Column;
-
-            //Store current outlier's elevation value in elevationValue
-            double elevationValue = elevObject.Elevation(r, c);
-
-            //String to store whether the outlier was caused by Fish or Bird
-            string problem = "Fish";
-
-            //If the outlier's elevation is below zero, then it must be Fish
-            if (elevationValue <= 0)
-            {
-                problem = "Fish";
-            }
-            //if the outlier's elevation is above zero, then it must be Bird
-            if (elevationValue > 0)
-            {
-                problem = "Bird";
-            }
-
-            //Outlier object is outputted as coordinate, in format specified by
-            //the override ToString Method
-            Console.WriteLine("  {0,7:F1} m   {1,-12}    {2,4} ",
-                elevationValue, allOutliers[i], problem);
+            Console.WriteLine("Congrats there are no outliers in this file!");
+            string correctedFilename = Path.GetFileNameWithoutExtension(filepath) + "-corrected.csv";
+            Console.WriteLine("\nThe " + correctedFilename + "file will not be written!");
         }
-
-
-        Console.WriteLine("\nCorrected Outlier Cells");
-        Console.WriteLine("  Elevation   DEM Grid Cell");
-
-        //Correct elevation of all the outliers
-        for (int i = 0; i < allOutliers.Length; i++)
+        else
         {
-            //Corrects the elevation of outlier to the average of surrounding
-            elevObject.SmoothOutlier(allOutliers[i]);
+            Console.WriteLine("Detected Outlier Cells");
+            Console.WriteLine("  Elevation   DEM Grid Cell   Problem");
+            
+            for (int i = 0; i < allOutliers.Length; i++)
+            {
+                //Store the row reference of current outlier in r
+                int r = allOutliers[i].Row;
+                //Store the column reference of current outlier in c
+                int c = allOutliers[i].Column;
 
-            //Store the row reference of the corrected outlier in r
-            int r = allOutliers[i].Row;
-            //Store the column reference of the corrected outlier in c
-            int c = allOutliers[i].Column;
+                //Store current outlier's elevation value in elevationValue
+                double elevationValue = elevObject.Elevation(r, c);
 
-            //Store current outlier's elevation value in elevationValue
-            double elevationValue = elevObject.Elevation(r, c);
-            Console.WriteLine("  {0,7:F1} m   {1,-12}", elevationValue, allOutliers[i]);
+                //String to store whether the outlier was caused by Fish or Bird
+                string problem = "Fish";
 
+                //If the outlier's elevation is below zero, then it must be Fish
+                if (elevationValue <= 0)
+                {
+                    problem = "Fish";
+                }
+                //if the outlier's elevation is above zero, then it must be Bird
+                if (elevationValue > 0)
+                {
+                    problem = "Bird";
+                }
+
+                //Outlier object is outputted as coordinate, in format specified by
+                //the override ToString Method
+                Console.WriteLine("  {0,7:F1} m   {1,-12}    {2,4} ",
+                    elevationValue, allOutliers[i], problem);
+            }
+
+
+            Console.WriteLine("\nCorrected Outlier Cells");
+            Console.WriteLine("  Elevation   DEM Grid Cell");
+
+            //Correct elevation of all the outliers
+            for (int i = 0; i < allOutliers.Length; i++)
+            {
+                //Corrects the elevation of outlier to the average of surrounding
+                elevObject.SmoothOutlier(allOutliers[i]);
+
+                //Store the row reference of the corrected outlier in r
+                int r = allOutliers[i].Row;
+                //Store the column reference of the corrected outlier in c
+                int c = allOutliers[i].Column;
+
+                //Store current outlier's elevation value in elevationValue
+                double elevationValue = elevObject.Elevation(r, c);
+                Console.WriteLine("  {0,7:F1} m   {1,-12}", elevationValue, allOutliers[i]);
+
+                //Write a DEM file with the corrected elevations
+                string correctedFilename = Path.GetFileNameWithoutExtension(filepath) + "-corrected.csv";
+                elevObject.WriteDEM(correctedFilename);
+            }
         }
-
-        //Write a DEM file with the corrected elevations
-        string correctedFilename = Path.GetFileNameWithoutExtension(filepath) + "-corrected.csv";
-        elevObject.WriteDEM(correctedFilename);
+        
 
 
         Console.WriteLine("\nWater Body Size Estimates");
