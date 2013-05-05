@@ -93,10 +93,11 @@ public class Program
         }
 
         //Write a DEM file with the corrected elevations
-        elevObject.WriteDEM("NewLakeTahoeDEM.csv");
+        string correctedFilename = Path.GetFileNameWithoutExtension(filepath) + "-corrected.csv";
+        elevObject.WriteDEM(correctedFilename);
 
 
-        Console.WriteLine("\nLake Size Estimates");
+        Console.WriteLine("\nWater Body Size Estimates");
 
         //Output the area in square km by calling the Area Method
         Console.WriteLine("    Area:   {0,5:F0} square km", elevObject.Area(0));
@@ -377,7 +378,7 @@ public class ElevationModel
         elevations[r, c] = eightAverage;
     }
 
-    //This method returns the area of Lake Tahoe which is at or below limit
+    //This method returns the area of Water Body which is at or below limit
     //specified by the argument of the parameter.  This area is represented by
     //cells and they can be counted and combined to determine the total area
     public double Area(double limit)
@@ -404,7 +405,7 @@ public class ElevationModel
         return areaCells * 0.01;
     }
 
-    //This method returns the volume of Lake Tahoe which is at or below limit
+    //This method returns the volume of the Water Body which is at or below limit
     //specified by the argument of the parameter.  This volume is represented by
     //0.1km by 0.1km by the elevation and the volume can be summed to determine 
     //the total volume
