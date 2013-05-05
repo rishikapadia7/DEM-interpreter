@@ -42,7 +42,7 @@ public class Program
         {
             Console.WriteLine("Congrats there are no outliers in this file!");
             string correctedFilename = Path.GetFileNameWithoutExtension(filepath) + "-corrected.csv";
-            Console.WriteLine("\nThe " + correctedFilename + "file will not be written!");
+            Console.WriteLine("\nThe " + correctedFilename + " file will not be written!");
         }
         else
         {
