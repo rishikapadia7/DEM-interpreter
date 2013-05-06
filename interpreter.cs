@@ -199,14 +199,14 @@ public class ElevationModel
     //the DEM file and stores its values in the rectangular elevations array.
     void ReadDEM(string inFileName)
     {
+        //Get the number of rows in csv file
+        int totalrows = GetRowCount(inFileName);
+        //Get number of columns in csv file
+        int totalcolumns = GetColumnCount(inFileName);
+        
         //create StreamReader object making the input stream
         //the inFileName passed by the method
         StreamReader inputStream = new StreamReader(inFileName);
-
-        //First line indicates the number of rows for the elevations array
-        int totalrows = int.Parse(inputStream.ReadLine());
-        //Second line indicates number of columns for the elevations array
-        int totalcolumns = int.Parse(inputStream.ReadLine());
 
         //Use the cells array to store the elevation values of an entire row
         //for a given row
@@ -442,4 +442,23 @@ public class ElevationModel
         return Math.Abs(volumeCells);
     }
 
+    static int GetRowCount(string filepath)
+    {
+        using (StreamReader r = new StreamReader(filepath))
+        {
+            int i = 0;
+            while (r.ReadLine() != null) { i++; }
+            return i;
+        }
+    }
+
+    static int GetColumnCount(string filepath)
+    {
+        using (StreamReader r = new StreamReader(filepath))
+        {
+            string line = r.ReadLine();
+            r.Close();
+            return line.Split(',').Length;
+        }
+    }
 }
